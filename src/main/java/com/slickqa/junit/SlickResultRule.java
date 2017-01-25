@@ -3,6 +3,7 @@ package com.slickqa.junit;
 import com.slickqa.client.SlickClient;
 import com.slickqa.client.errors.SlickError;
 import com.slickqa.client.model.Result;
+import com.slickqa.junit.annotations.SlickMetaData;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -103,8 +104,8 @@ public class SlickResultRule extends TestWatcher {
             if(result != null) {
                 Result update = new Result();
                 update.setFinished(new Date());
-                update.setStatus("FAIL");
-                update.setRunstatus("SKIPPED");
+                update.setStatus("SKIPPED");
+                update.setRunstatus("FINISHED");
                 update.setReason(e.getMessage());
                 try {
                     getSlickClient().result(result.getId()).update(update);
@@ -119,7 +120,7 @@ public class SlickResultRule extends TestWatcher {
     @Override
     protected void starting(Description description) {
         super.starting(description);
-        if(isUsingSlick()) {
+        if(isUsingSlick() && description.getAnnotation(SlickMetaData.class) != null) {
             Result result = getSlickJunitController().getOrCreateResultFor(description);
             Result update = new Result();
             update.setStarted(new Date());

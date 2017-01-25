@@ -8,6 +8,11 @@ import org.junit.runners.model.RunnerBuilder;
  * Created by jason.corbett on 1/23/17.
  */
 public class SlickSuite extends Suite {
+
+    static {
+
+    }
+
     public final SlickJunitController controller = SlickJunitControllerFactory.getControllerInstance();
 
     public SlickSuite(Class<?> klass, RunnerBuilder builder) throws InitializationError {

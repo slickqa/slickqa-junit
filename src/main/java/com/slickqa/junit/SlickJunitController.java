@@ -201,6 +201,7 @@ public class SlickJunitController {
                     testcase = slickClient.testcases().create(testcase);
                 }
 
+                testcase.setName(metaData.title());
                 testcase.setAutomated(true);
                 testcase.setAutomationId(automationId);
                 testcase.setAutomationKey(getValueOrNullIfEmpty(metaData.automationKey()));
