@@ -5,7 +5,7 @@
   <artifactId>slickqa-junit</artifactId>
   <packaging>jar</packaging>
   <name>Slick JUnit integration</name>
-  <version>1.0.0-1</version>
+  <version>1.0.0-2</version>
   <description>JUnit integration for the slick test management tool.</description>
   <url>http://github.com/slickqa/slickqa-junit</url>
   <issueManagement>
@@ -155,7 +155,7 @@
     <dependency>
       <groupId>com.slickqa</groupId>
       <artifactId>slickqa-java-client</artifactId>
-      <version>1.0.1-1</version>
+      <version>1.0.1-4</version>
     </dependency>
 
     <!-- test dependencies -->
@@ -170,6 +170,21 @@
       <artifactId>junit</artifactId>
       <version>${junit-version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${jackson-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson-version}</version>
+    </dependency>
 
   </dependencies>
 
@@ -177,6 +192,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <junit-version>4.11</junit-version>
     <jmockit-version>1.6</jmockit-version>
+    <jackson-version>2.7.2</jackson-version>
   </properties>
 </project>
 

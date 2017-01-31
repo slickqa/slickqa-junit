@@ -3,14 +3,19 @@ package com.slickqa.junit;
 import com.slickqa.client.SlickClient;
 import com.slickqa.client.errors.SlickError;
 import com.slickqa.client.model.Result;
+import com.slickqa.client.model.StoredFile;
 import com.slickqa.junit.annotations.SlickMetaData;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * JUnit rule to use inside the tests
@@ -18,6 +23,8 @@ import java.util.Date;
 public class SlickResultRule extends TestWatcher {
 
     private SlickJunitController slickJunitController;
+
+    private ThreadLocal<Result> currentResult;
 
     private boolean triedToInitialize;
 
@@ -51,6 +58,66 @@ public class SlickResultRule extends TestWatcher {
     public SlickResultRule() {
         triedToInitialize = false;
         slickJunitController = null;
+        currentResult = new ThreadLocal<>();
+        currentResult.set(null);
+    }
+
+    private void addFileToResult(String resultId, StoredFile file) {
+        try {
+            Result current = getSlickClient().result(resultId).get();
+            List<StoredFile> files = current.getFiles();
+            if(files == null) {
+                files = new ArrayList<>(1);
+            }
+            files.add(file);
+            Result update = new Result();
+            update.setFiles(files);
+            getSlickClient().result(current.getId()).update(update);
+        } catch (SlickError e) {
+            e.printStackTrace();
+            System.err.println("!! ERROR: adding file to result " + resultId + " !!");
+        }
+
+    }
+
+    public void addFile(Path localPath) {
+        if(isUsingSlick()) {
+            Result current = currentResult.get();
+            if(current != null) {
+                StoredFile file = null;
+                try {
+                    file = getSlickClient().files().createAndUpload(localPath);
+                } catch (SlickError e) {
+                    e.printStackTrace();
+                    System.err.println("!! ERROR: unable to upload file " + localPath.toString() + " !!");
+                }
+                if (file != null) {
+                    addFileToResult(current.getId(), file);
+                }
+            } else {
+                System.err.println("!! WARNING: no current result when trying to add " + localPath.toString() + " !!");
+            }
+        }
+    }
+
+    public void addFile(String filename, String mimetype, InputStream inputStream) {
+        if(isUsingSlick()) {
+            Result current = currentResult.get();
+            if(current != null) {
+                StoredFile file = null;
+                try {
+                    file = getSlickClient().files().createAndUpload(filename, mimetype, inputStream);
+                } catch (SlickError e) {
+                    e.printStackTrace();
+                    System.err.println("!! ERROR: unable to upload file " + filename + " !!");
+                }
+                if (file != null) {
+                    addFileToResult(current.getId(), file);
+                }
+            } else {
+                System.err.println("!! WARNING: no current result when trying to add " + filename + " !!");
+            }
+        }
     }
 
     @Override
@@ -128,10 +195,14 @@ public class SlickResultRule extends TestWatcher {
             update.setRunstatus("RUNNING");
             try {
                 result = getSlickClient().result(result.getId()).update(update);
+                currentResult.set(getSlickClient().result(result.getId()).get());
             } catch (SlickError e) {
                 e.printStackTrace();
                 System.err.println("!! ERROR: Unable to set result to starting. !!");
+                currentResult.set(null);
             }
+        } else {
+            currentResult.set(null);
         }
     }
 }

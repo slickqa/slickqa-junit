@@ -6,6 +6,9 @@ import com.slickqa.junit.annotations.Step;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * An example Test
  */
@@ -33,7 +36,10 @@ public class ExampleTest {
                     @Step(step = "first step", expectation = "first step worked"),
                     @Step(step = "second")
             })
-    public void exampleTestTwo() {
+    public void exampleTestTwo() throws Exception {
         //throw new AssertionError("This test is supposed to fail so you can see it!");
+        Path file = Paths.get(ExampleTest.class.getProtectionDomain().getCodeSource().getLocation().getPath())
+                         .resolve(Paths.get("com", "slickqa", "junit", "example", "screenshot.png"));
+        slick.addFile(file);
     }
 }
