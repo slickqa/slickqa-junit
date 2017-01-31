@@ -38,6 +38,6 @@ public class AnotherExampleTest {
                     @Step(step = "second step", expectation = "second step worked")
             })
     public void exampleTestFour() throws Exception {
-        Thread.sleep(2 * 60 * 1000); // 2 minutes
+        //Thread.sleep(2 * 60 * 1000); // 2 minutes
     }
 }

@@ -5,7 +5,7 @@
   <artifactId>slickqa-junit</artifactId>
   <packaging>jar</packaging>
   <name>Slick JUnit integration</name>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0-1</version>
   <description>JUnit integration for the slick test management tool.</description>
   <url>http://github.com/slickqa/slickqa-junit</url>
   <issueManagement>

@@ -22,7 +22,7 @@ public class ExampleTest {
                        @Step(step = "second")
                    })
     public void exampleTestOne() throws Exception {
-        Thread.sleep(60 * 1000);
+        //Thread.sleep(60 * 1000);
     }
 
     @Test
@@ -34,6 +34,6 @@ public class ExampleTest {
                     @Step(step = "second")
             })
     public void exampleTestTwo() {
-        throw new AssertionError("This test is supposed to fail so you can see it!");
+        //throw new AssertionError("This test is supposed to fail so you can see it!");
     }
 }
