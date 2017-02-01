@@ -4,6 +4,7 @@ import com.slickqa.client.SlickClient;
 import com.slickqa.client.errors.SlickError;
 import com.slickqa.client.model.Result;
 import com.slickqa.client.model.StoredFile;
+import com.slickqa.junit.annotations.SlickLogger;
 import com.slickqa.junit.annotations.SlickMetaData;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.rules.TestWatcher;
@@ -26,9 +27,11 @@ public class SlickResultRule extends TestWatcher {
 
     private ThreadLocal<Result> currentResult;
 
+    private ThreadLocal<SlickLogger> logger;
+
     private boolean triedToInitialize;
 
-    private SlickClient getSlickClient() {
+    public SlickClient getSlickClient() {
         if(isUsingSlick()) {
             return getSlickJunitController().getSlickClient();
         } else {
@@ -47,6 +50,10 @@ public class SlickResultRule extends TestWatcher {
         return retval;
     }
 
+    public SlickLogger log() {
+        return logger.get();
+    }
+
     private SlickJunitController getSlickJunitController() {
         if(!triedToInitialize) {
             slickJunitController = SlickJunitControllerFactory.getControllerInstance();
@@ -59,7 +66,16 @@ public class SlickResultRule extends TestWatcher {
         triedToInitialize = false;
         slickJunitController = null;
         currentResult = new ThreadLocal<>();
+        logger = new ThreadLocal<>();
         currentResult.set(null);
+    }
+
+    public Result getCurrentResult() {
+        Result current = null;
+        if(isUsingSlick()) {
+            current = currentResult.get();
+        }
+        return current;
     }
 
     private void addFileToResult(String resultId, StoredFile file) {
@@ -126,6 +142,7 @@ public class SlickResultRule extends TestWatcher {
         if(isUsingSlick()) {
             Result result = getSlickJunitController().getResultFor(description);
             if(result != null) {
+                log().flushLogs();
                 Result update = new Result();
                 update.setFinished(new Date());
                 update.setStatus("PASS");
@@ -146,6 +163,7 @@ public class SlickResultRule extends TestWatcher {
         if(isUsingSlick()) {
             Result result = getSlickJunitController().getResultFor(description);
             if(result != null) {
+                log().flushLogs();
                 Result update = new Result();
                 update.setFinished(new Date());
                 update.setStatus("FAIL");
@@ -169,6 +187,7 @@ public class SlickResultRule extends TestWatcher {
         if(isUsingSlick()) {
             Result result = getSlickJunitController().getResultFor(description);
             if(result != null) {
+                log().flushLogs();
                 Result update = new Result();
                 update.setFinished(new Date());
                 update.setStatus("SKIPPED");
@@ -187,6 +206,7 @@ public class SlickResultRule extends TestWatcher {
     @Override
     protected void starting(Description description) {
         super.starting(description);
+        logger.set(new SlickResultLogger(this));
         if(isUsingSlick() && description.getAnnotation(SlickMetaData.class) != null) {
             Result result = getSlickJunitController().getOrCreateResultFor(description);
             Result update = new Result();
