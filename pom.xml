@@ -5,7 +5,7 @@
   <artifactId>slickqa-junit</artifactId>
   <packaging>jar</packaging>
   <name>Slick JUnit integration</name>
-  <version>1.0.0-3</version>
+  <version>1.0.0-4</version>
   <description>JUnit integration for the slick test management tool.</description>
   <url>http://github.com/slickqa/slickqa-junit</url>
   <issueManagement>
@@ -155,7 +155,7 @@
     <dependency>
       <groupId>com.slickqa</groupId>
       <artifactId>slickqa-java-client</artifactId>
-      <version>1.0.1-5</version>
+      <version>1.0.2-1</version>
     </dependency>
 
     <!-- test dependencies -->
