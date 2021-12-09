@@ -192,7 +192,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <junit-version>4.11</junit-version>
     <jmockit-version>1.6</jmockit-version>
-    <jackson-version>2.7.2</jackson-version>
+    <jackson-version>2.9.10.8</jackson-version>
   </properties>
 </project>
 
